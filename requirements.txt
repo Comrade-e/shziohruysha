@@ -1,0 +1,6 @@
+g4f
+aiogram
+sqlalchemy
+curl-cffi
+nest_asyncio
+nodriver
