@@ -3,17 +3,26 @@ import asyncio
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
 
+from aiogram.filters.exception import ExceptionTypeFilter
+from aiogram.types.error_event import ErrorEvent
+
 import mylogger
+import time
 
 
 import saver_reader as sr
 import ai
 from config import TOKEN
 
-lg = mylogger.MyLogger('info','main.log')
+lg = mylogger.MyLogger('info',f'{time.time()}.log')
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
+
+@dp.error(ExceptionTypeFilter(Exception), F.update.message.as_("message"))
+async def handle_my_custom_exception(event: ErrorEvent, message):
+    lg.log('error', f'An error occured! {event.exception}')
+    await message.answer("Oops, something went wrong!")
 
 @dp.message(CommandStart())
 async def cmd_start(message):
@@ -49,7 +58,7 @@ async def main():
     try:
         await dp.start_polling(bot)
     except Exception as e:
-        lg.log('error', f'Error! {str(e)}')
+        lg.log('critical', f'Error! {str(e)}')
 
 
 if __name__ == '__main__':
