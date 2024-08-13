@@ -38,7 +38,7 @@ async def cmd_generate(message):
         await message.answer('Слишком много!')
     else:
         await message.answer('Генерация...')
-        text = await ai.gen('command-r+', 'Создайте эссе по ключевым словам на русском языке: ' + ' ,'.join(sr.randomwords(amount, 'data.txt')) + 'Текст должен быть тематически однороден')
+        text = await ai.gen('gpt-3.5-turbo', 'Создайте эссе по ключевым словам на русском языке: ' + ' ,'.join(sr.randomwords(amount, 'data.txt')) + 'Текст должен быть тематически однороден')
         await message.answer(text)
 
 @dp.message(Command('load'))
