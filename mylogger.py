@@ -5,7 +5,7 @@ class MyLogger():
     LEVEL_MAP = {'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNING, 'error': logging.ERROR,
                  'critical': logging.CRITICAL}
     def __init__(self, level: str, filename: str):
-        self.logger = logging.getLogger(str(random.random()))
+        self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         file_handler = logging.FileHandler(filename=filename, encoding='utf-8')
         file_handler.setLevel(MyLogger.LEVEL_MAP[level])

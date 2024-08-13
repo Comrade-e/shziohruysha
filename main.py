@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
 
 import mylogger
@@ -17,7 +17,6 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def cmd_start(message):
-    print(lg)
     lg.log('info', f'User {message.from_user.id} had started the bot.')
     await message.answer('Это эксперимент "Шизохрюша". /generate <n> - сгенерировать текст по промпту из n случайных '
                          'слов, уже существующих в текстах, хранящихся в памяти. /load <текст> - загрузить текст в память')
@@ -25,7 +24,7 @@ async def cmd_start(message):
 @dp.message(Command('generate'))
 async def cmd_generate(message):
     amount = int(message.text.split(' ')[-1])
-    print(amount)
+    lg.log('info', f'User {message.from_user.id} requests to generate by {amount}')
     if amount > 350:
         await message.answer('Слишком много!')
     else:
@@ -35,13 +34,22 @@ async def cmd_generate(message):
 
 @dp.message(Command('load'))
 async def cmd_load(message):
+    lg.log('info', f'User {message.from_user.id} loads the text.')
     txt = message.text.replace('/load', '')
     sr.save(txt, 'data.txt')
     await message.answer('Ваш текст принят.')
 
+@dp.message(F.text == '_error_')
+async def errortest(message):
+    await message.answer(str(1/0))
+
+
 
 async def main():
-    await dp.start_polling(bot)
+    try:
+        await dp.start_polling(bot)
+    except Exception as e:
+        lg.log('error', f'Error! {str(e)}')
 
 
 if __name__ == '__main__':
